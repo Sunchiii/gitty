@@ -21,32 +21,6 @@ main (production) ← hotfix branches
     └── hotfix/* (production fixes)
 ```
 
-## 📁 Project Structure
-
-```
-gitty/
-├── cmd/
-│   ├── root.go      # Main CLI setup and command registration
-│   ├── start.go     # Start feature/hotfix branches
-│   ├── finish.go    # Finish feature/hotfix branches
-│   ├── sync.go      # Sync with develop branch
-│   ├── check.go     # Validate before push
-│   ├── protect.go   # Install Git hooks
-│   ├── status.go    # Show branch status
-│   ├── cleanup.go   # Clean up merged branches
-│   ├── validate.go  # Validate branch naming
-│   ├── conflict.go  # Check for conflicts
-│   ├── team.go      # Show workflow guide
-│   ├── utils.go     # Shared utility functions
-│   └── config.go    # Configuration management
-├── hook/
-│   └── pre-push/    # Sample Git hooks
-├── main.go          # Application entry point
-├── go.mod           # Go module definition
-├── Makefile         # Build and install commands
-└── README.md        # This file
-```
-
 ## 🚀 Installation
 
 ### Quick Install (Recommended)
@@ -147,6 +121,54 @@ gitty update
 ### Installation Locations
 - **Global**: `/usr/local/bin/gitty` (default)
 - **User**: `~/bin/gitty` (if `/usr/local/bin` is not writable)
+
+## 🔄 Typical Workflow
+
+### For New Features
+
+1. **Start feature branch:**
+   ```bash
+   gitty start feature new-feature-name
+   ```
+
+2. **Make changes and commit:**
+   ```bash
+   git add .
+   git commit -m "Add new feature"
+   ```
+
+3. **Sync with develop:**
+   ```bash
+   gitty sync
+   ```
+
+4. **Push and create PR:**
+   ```bash
+   git push origin feature/new-feature-name
+   ```
+
+5. **After merge, finish the branch:**
+   ```bash
+   gitty finish feature new-feature-name
+   ```
+
+### For Hotfixes
+
+1. **Start hotfix branch:**
+   ```bash
+   gitty start hotfix critical-fix
+   ```
+
+2. **Make changes and commit:**
+   ```bash
+   git add .
+   git commit -m "Fix critical issue"
+   ```
+
+3. **Finish hotfix:**
+   ```bash
+   gitty finish hotfix critical-fix
+   ```
 
 ## 📋 Commands
 
@@ -298,54 +320,6 @@ gitty version
 - Go version
 - Platform information
 
-## 🔄 Typical Workflow
-
-### For New Features
-
-1. **Start feature branch:**
-   ```bash
-   gitty start feature new-feature-name
-   ```
-
-2. **Make changes and commit:**
-   ```bash
-   git add .
-   git commit -m "Add new feature"
-   ```
-
-3. **Sync with develop:**
-   ```bash
-   gitty sync
-   ```
-
-4. **Push and create PR:**
-   ```bash
-   git push origin feature/new-feature-name
-   ```
-
-5. **After merge, finish the branch:**
-   ```bash
-   gitty finish feature new-feature-name
-   ```
-
-### For Hotfixes
-
-1. **Start hotfix branch:**
-   ```bash
-   gitty start hotfix critical-fix
-   ```
-
-2. **Make changes and commit:**
-   ```bash
-   git add .
-   git commit -m "Fix critical issue"
-   ```
-
-3. **Finish hotfix:**
-   ```bash
-   gitty finish hotfix critical-fix
-   ```
-
 ## 🛡️ Protection Features
 
 ### Branch Protection
@@ -377,6 +351,32 @@ The `protect` command installs a pre-push hook that prevents direct pushes to pr
 - **Clear workflow guidance** with helpful messages
 - **Conflict prevention** through early detection
 - **Branch cleanup** to keep repository tidy
+
+
+## 📁 Project Structure
+```
+gitty/
+├── cmd/
+│   ├── root.go      # Main CLI setup and command registration
+│   ├── start.go     # Start feature/hotfix branches
+│   ├── finish.go    # Finish feature/hotfix branches
+│   ├── sync.go      # Sync with develop branch
+│   ├── check.go     # Validate before push
+│   ├── protect.go   # Install Git hooks
+│   ├── status.go    # Show branch status
+│   ├── cleanup.go   # Clean up merged branches
+│   ├── validate.go  # Validate branch naming
+│   ├── conflict.go  # Check for conflicts
+│   ├── team.go      # Show workflow guide
+│   ├── utils.go     # Shared utility functions
+│   └── config.go    # Configuration management
+├── hook/
+│   └── pre-push/    # Sample Git hooks
+├── main.go          # Application entry point
+├── go.mod           # Go module definition
+├── Makefile         # Build and install commands
+└── README.md        # This file
+```
 
 ## 🔧 Configuration
 
