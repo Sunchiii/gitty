@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var forceDelete bool
+
 var finishCmd = &cobra.Command{
 	Use:   "finish [feature|hotfix] <name>",
 	Short: "Finish a feature or hotfix branch",
@@ -36,15 +38,29 @@ var finishCmd = &cobra.Command{
 			log.Fatal("❌ You have uncommitted changes. Please commit or stash them first.")
 		}
 
+		allowedTargets := map[string]bool{"main": true, "uat": true, "develop": true}
+		if !allowedTargets[target] {
+			log.Fatalf("❌ Can only finish into main, uat, or develop. Got: %s", target)
+		}
+
+		deleteFlag := "-d"
+		if forceDelete {
+			deleteFlag = "-D"
+		}
 		cmds := [][]string{
 			{"git", "checkout", target},
 			{"git", "pull", "origin", target},
 			{"git", "merge", "--no-ff", branch},
-			{"git", "branch", "-d", branch},
+			{"git", "branch", deleteFlag, branch},
 		}
+
 		executeCommands(cmds)
 
 		fmt.Printf("✅ Successfully finished %s branch: %s\n", type_, branch)
 		fmt.Printf("💡 Don't forget to push: git push origin %s\n", target)
 	},
+}
+
+func init() {
+	finishCmd.Flags().BoolVarP(&forceDelete, "force", "f", false, "Force delete the branch even if not merged")
 }
