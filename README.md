@@ -21,6 +21,15 @@ main (production) ← hotfix branches
     └── hotfix/* (production fixes)
 ```
 
+## 📦 Installation Features
+
+### One-Line Installation
+Users can install Gitty with a single command:
+```bash
+curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.sh | bash
+```
+
+
 ## 🚀 Installation
 
 ### Quick Install (Recommended)
@@ -74,37 +83,6 @@ curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/uninsta
 ```powershell
 # Remove gitty from Windows
 Remove-Item -Path "$env:LOCALAPPDATA\gitty" -Recurse -Force
-```
-
-## 📦 Building & Releasing
-
-### Building with Version Info
-```bash
-# Build with current git commit and date
-make build-version
-
-# Build with specific version
-VERSION=v1.0.0 make build-version
-```
-
-### Creating Releases
-```bash
-# Create a release for version v1.0.0
-make release VERSION=v1.0.0
-
-# This will:
-# - Build for multiple platforms (Linux, macOS, Windows)
-# - Create checksums for verification
-# - Generate release notes
-# - Prepare files for GitHub release
-```
-
-## 📦 Installation Features
-
-### One-Line Installation
-Users can install Gitty with a single command:
-```bash
-curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.sh | bash
 ```
 
 ### Automatic Updates
@@ -376,6 +354,29 @@ gitty/
 ├── go.mod           # Go module definition
 ├── Makefile         # Build and install commands
 └── README.md        # This file
+```
+
+## 📦 Building & Releasing
+
+### Building with Version Info
+```bash
+# Build with current git commit and date
+make build-version
+
+# Build with specific version
+VERSION=v1.0.0 make build-version
+```
+
+### Creating Releases
+```bash
+# Create a release for version v1.0.0
+make release VERSION=v1.0.0
+
+# This will:
+# - Build for multiple platforms (Linux, macOS, Windows)
+# - Create checksums for verification
+# - Generate release notes
+# - Prepare files for GitHub release
 ```
 
 ## 🔧 Configuration
