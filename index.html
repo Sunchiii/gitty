@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gitty - Enforce Git Workflows Like a Pro</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Gitty is a CLI tool to enforce Git workflows, protect branches, and keep your team's repository clean and organized. Prevent mistakes, automate branch protection, and streamline your Git process.">
+    <meta name="keywords" content="git, workflow, cli, branch protection, git hooks, gitty, team, automation, rebase, branch naming, conflict prevention, devops, code quality">
+    <meta name="author" content="Sunchiii">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Gitty - Enforce Git Workflows Like a Pro">
+    <meta property="og:description" content="Enforce Git workflows, protect branches, and automate best practices for your team with Gitty CLI.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/Sunchiii/gitty">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Sunchiii/gitty/main/.github/git-hero.png">
     <!-- Custom SVG Icons will be inline -->
     <style>
         * {
@@ -411,6 +421,10 @@
             color: rgba(255, 255, 255, 0.7);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+        pre, code {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
     </style>
 </head>
 <body>
@@ -482,7 +496,7 @@
                 
                 <div class="install-section">
                     <h3 style="margin-bottom: 1rem; color: white;">Quick Install</h3>
-                    <div class="install-code" onclick="copyToClipboard(this)">
+                    <div id="install-instructions" class="install-code" onclick="copyToClipboard(this)">
                         curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.sh | bash
                         <button class="copy-btn" onclick="event.stopPropagation()">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -492,7 +506,7 @@
                         </button>
                     </div>
                     <div class="platforms">
-                        <div class="platform">
+                        <div class="platform" data-platform="macos">
                             <svg class="platform-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <!-- Apple Logo -->
                                 <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 21.99 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 21.99C7.78997 22.03 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.85 11.27 7.74 12.06 7.74C12.85 7.74 14.27 6.68 15.85 6.84C16.51 6.87 18.27 7.15 19.38 8.83C19.27 8.9 17.94 9.81 17.96 11.53C17.98 13.58 19.70 14.34 19.73 14.35C19.69 14.47 19.41 15.42 18.71 19.5Z" fill="white"/>
@@ -500,7 +514,7 @@
                             </svg>
                             macOS
                         </div>
-                        <div class="platform">
+                        <div class="platform" data-platform="linux">
                             <svg class="platform-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <!-- Linux Tux -->
                                 <path d="M12 2C10.5 2 9.5 3 9.5 4.5C9.5 5.5 10 6.5 11 7C10.5 7.5 10 8.5 10 9.5C10 11 11 12 12.5 12C14 12 15 11 15 9.5C15 8.5 14.5 7.5 14 7C15 6.5 15.5 5.5 15.5 4.5C15.5 3 14.5 2 12 2Z" stroke="white" stroke-width="1.5" fill="white"/>
@@ -511,7 +525,7 @@
                             </svg>
                             Linux
                         </div>
-                        <div class="platform">
+                        <div class="platform" data-platform="windows">
                             <svg class="platform-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <!-- Windows Logo -->
                                 <path d="M3 5.45L9.75 4.5V11.5H3V5.45Z" fill="white"/>
@@ -756,6 +770,85 @@
                 }, 2000);
             });
         }
+
+        // Platform-specific install instructions (inline)
+        const platformInstallInstructions = {
+            macos: `
+<div class="cmd-block">
+    <pre><code>curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.sh | \
+  bash</code></pre><button class="copy-cmd-btn" data-cmd="curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.sh | bash">Copy</button>
+</div>
+`,
+            linux: `
+<div class="cmd-block"><pre><code>curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.sh | \
+  bash</code></pre><button class="copy-cmd-btn" data-cmd="curl -fsSL https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.sh | bash">Copy</button></div>
+`,
+            windows: `
+<div class="cmd-block"><pre><code>Invoke-Expression (Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.ps1\").Content</code></pre><button class="copy-cmd-btn" data-cmd="Invoke-Expression (Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Sunchiii/gitty/main/scripts/install.ps1').Content">Copy</button></div>
+`
+        };
+
+        document.querySelectorAll('.platform').forEach(function(el) {
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', function() {
+                // Remove highlight from all
+                document.querySelectorAll('.platform').forEach(p => p.classList.remove('platform-selected'));
+                // Highlight selected
+                this.classList.add('platform-selected');
+                // Update install instructions
+                const platform = this.getAttribute('data-platform');
+                const box = document.getElementById('install-instructions');
+                box.innerHTML = platformInstallInstructions[platform] || platformInstallInstructions['macos'];
+                // Attach copy event to new buttons
+                box.querySelectorAll('.copy-cmd-btn').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        const cmd = btn.getAttribute('data-cmd');
+                        navigator.clipboard.writeText(cmd);
+                        btn.textContent = 'Copied!';
+                        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+                    };
+                });
+            });
+        });
+        // Optional: Add highlight style and per-command block style
+        (function() {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .platform-selected {
+                    background: rgba(76, 205, 196, 0.25) !important;
+                    border: 2px solid #4ecdc4 !important;
+                }
+                .cmd-block {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    margin-bottom: 0.5rem;
+                }
+                .cmd-block pre {
+                    margin: 0;
+                    flex: 1;
+                    background: none;
+                    color: #00ff88;
+                    font-size: 1.05rem;
+                }
+                .copy-cmd-btn {
+                    background: rgba(255,255,255,0.15);
+                    border: 1px solid #4ecdc4;
+                    color: #4ecdc4;
+                    border-radius: 6px;
+                    padding: 0.3rem 0.8rem;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    transition: background 0.2s, color 0.2s;
+                }
+                .copy-cmd-btn:hover {
+                    background: #4ecdc4;
+                    color: #222;
+                }
+            `;
+            document.head.appendChild(style);
+        })();
 
         // Add some interactive animations
         document.addEventListener('DOMContentLoaded', function() {
