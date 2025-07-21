@@ -24,6 +24,10 @@ release:
 test:
 	go test ./...
 
+# Test installation scripts
+test-install:
+	./scripts/test-install.sh
+
 # Format code
 fmt:
 	go fmt ./...
