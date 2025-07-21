@@ -1,0 +1,19 @@
+#!/bin/sh
+# Gitty pre-push hook to protect critical branches
+
+branch=$(git symbolic-ref HEAD | sed -e 's,.*/,,')
+protected_branches="main uat develop"
+
+for protected in $protected_branches; do
+  if [ "$branch" = "$protected" ]; then
+    echo "[GITTY] Push to $branch is not allowed!"
+    echo "Please use gitty workflow instead:"
+    echo "  1. gitty start feature <name>"
+    echo "  2. Make your changes"
+    echo "  3. gitty sync"
+    echo "  4. git push origin feature/<name>"
+    exit 1
+  fi
+done
+
+echo "[GITTY] Push allowed for branch: $branch" 

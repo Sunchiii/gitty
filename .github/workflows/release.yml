@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build and release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get version from tag
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "Building version: $VERSION"
+          
+          # Update version.txt
+          echo "$VERSION" > cmd/version.txt
+          
+          # Build for multiple platforms
+          PLATFORMS=(
+            "linux/amd64"
+            "linux/arm64"
+            "darwin/amd64"
+            "darwin/arm64"
+            "windows/amd64"
+          )
+          
+          mkdir -p release
+          
+          for platform in "${PLATFORMS[@]}"; do
+            IFS='/' read -r GOOS GOARCH <<< "$platform"
+            
+            echo "Building for $GOOS/$GOARCH..."
+            
+            # Set build flags
+            BUILD_DATE=$(date -u +"%Y-%m-%d")
+            GIT_COMMIT=${GITHUB_SHA::7}
+            LDFLAGS="-X github.com/Sunchiii/gitty/cmd.Version=$VERSION -X github.com/Sunchiii/gitty/cmd.BuildDate=$BUILD_DATE -X github.com/Sunchiii/gitty/cmd.GitCommit=$GIT_COMMIT"
+            
+            # Set output name
+            OUTPUT="gitty-$VERSION-$GOOS-$GOARCH"
+            if [ "$GOOS" = "windows" ]; then
+              OUTPUT="$OUTPUT.exe"
+            fi
+            
+            # Build
+            GOOS=$GOOS GOARCH=$GOARCH go build -ldflags "$LDFLAGS" -o "release/$OUTPUT"
+            
+            # Create checksum
+            if [ "$GOOS" = "windows" ]; then
+              sha256sum "release/$OUTPUT" > "release/$OUTPUT.sha256"
+            else
+              shasum -a 256 "release/$OUTPUT" > "release/$OUTPUT.sha256"
+            fi
+          done
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release/*
+          generate_release_notes: true
+          draft: false
+          prerelease: false 
