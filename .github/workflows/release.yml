@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -73,3 +76,8 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: false 
+      - name: Debug GITHUB_TOKEN permissions
+        run: |
+          curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
